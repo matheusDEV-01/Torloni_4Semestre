@@ -1,40 +1,44 @@
 //imports
+import axios from 'axios';
 import './App.css'
 import iconEdit from "./assets/iconEdit.svg"
 import trashIcon from "./assets/oi.svg"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 function App() {
 
   // states e variáveis
-  const [taskList, setTaskList] = useState([
-    {
-      id: 1,
-      descricao: "Revisar HTML semântico",
-    },
-    {
-      id: 2,
-      descricao: "Fazer exercícios de useState",
-    },
-    {
-      id: 3,
-      descricao: "Aprender useEffect",
-    },
-    {
-      id: 4,
-      descricao: "Estudar React Native",
-    },
-  ]);
+  const [taskList, setTaskList] = useState([]);
 
-  //criar um state chamdo
-  //tasklist como iniciando com um array de
-  //objetos [{ xpto: abc, iii: uuu}]
-  //já preenchido com 4 tarefas
-
-  //em seguida fazer um map e gerar os cards
-  //com todas as tarefas
   //funções e effects
+  //CRUD
+
+  //Read (Get)
+  const getTaks = async () => { 
+    //chama a api
+    try {
+      const APIReturn = await axios.get("http://localhost:3000/taskpoin")
+      const dataAPI = await APIReturn.data
+      //e armazenar os dados no state (tasklist)
+      setTaskList(dataAPI)
+    } catch (error) {
+      
+    }
+  }
+
+  //Create (Post)
+  const createTaks = () => { }
+
+  //Update (Put/Patch)
+  const putTask = () => []
+
+  //Delete (Delete)
+  const deleteTask = () => []
+
+  useEffect(() => {
+    getTaks()
+  }, [])
 
   return (
     <>

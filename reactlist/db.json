@@ -1,0 +1,21 @@
+{
+    "taskpoin" : 
+    [
+          {
+      "id": 1,
+      "descricao": "Revisar HTML semântico"
+    },
+    {
+      "id": 2,
+      "descricao": "Fazer exercícios de useState"
+    },
+    {
+      "id": 3,
+      "descricao": "Aprender useEffect"
+    },
+    {
+      "id": 4,
+      "descricao": "Estudar React Native"
+    }
+    ]
+}
