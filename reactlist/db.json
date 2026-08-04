@@ -1,21 +1,25 @@
 {
-    "taskpoin" : 
-    [
-          {
-      "id": 1,
-      "descricao": "Revisar HTML semântico"
+  "taskpoin": [
+    {
+      "descricao": "Revisar HTML semântico",
+      "id": "1"
     },
     {
-      "id": 2,
+      "id": "2",
       "descricao": "Fazer exercícios de useState"
     },
     {
-      "id": 3,
+      "id": "3",
       "descricao": "Aprender useEffect"
     },
     {
-      "id": 4,
-      "descricao": "Estudar React Native"
+      "descricao": "Estudar React Native1123",
+      "id": "4"
+    },
+    {
+      "descricao": "oi",
+      "id": "YfbBm_RWTAE"
     }
-    ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

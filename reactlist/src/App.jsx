@@ -10,34 +10,105 @@ function App() {
 
   // states e variáveis
   const [taskList, setTaskList] = useState([]);
+  const [taskValue, setTaskValue] = useState("")
+  const [editMode, setEditMode] = useState(false)
+  const [idToEdit, setIdToEdit] = useState(0)
 
   //funções e effects
   //CRUD
 
   //Read (Get)
-  const getTaks = async () => { 
+  const getTasks = async () => {
     //chama a api
     try {
       const APIReturn = await axios.get("http://localhost:3000/taskpoin")
-      const dataAPI = await APIReturn.data
+      const dataAPI = APIReturn.data
       //e armazenar os dados no state (tasklist)
       setTaskList(dataAPI)
     } catch (error) {
-      
+
     }
   }
 
   //Create (Post)
-  const createTaks = () => { }
+  const createTask = async (e) => {
+    e.preventDefault();
 
+    //validar o formulário
+    //cadastrar | post os dados (try/catch)
+
+    if (taskValue.trim().length === 0) {
+      alert("Preencha o campo de tarefa")
+      return false
+    }
+
+    try {
+      const APIReturn = await axios.post("http://localhost:3000/taskpoin", { descricao: taskValue })
+      const bodyAPI = await APIReturn.data
+      setTaskValue("") //
+      getTasks()
+      alert("Tarefa cadastrada com sucesso!")
+
+    } catch (error) {
+      alert("Erro ao cadastrar a tarefa.");
+    }
+
+    // recarregar os dados na tela (getTask)
+
+  }
+  //visualizar (ver os dados no formulário)
   //Update (Put/Patch)
-  const putTask = () => []
+  const putTask = (taskItem) => {
+    setTaskValue(taskItem.descricao)
+    setEditMode(true)
+    setIdToEdit(taskItem.id)
+
+  }
+
+  //confirmar o cadastro na API
+  const confirmPutTask = async (e) => {
+    e.preventDefault()
+    //valitar o form
+    if (taskValue.trim().length === 0) {
+      alert("Preencha a tarefa corretamente")
+      return false
+    }
+
+
+    try {
+      axios.put(`http://localhost:3000/taskpoin/${idToEdit}`,
+        { descricao: taskValue })
+      alert("A tarefa foi editada")
+      getTasks()
+      setEditMode(false)
+      setIdToEdit(0)
+      setTaskValue("")
+    } catch (erro) {
+      alert("Erro ao editar a tarefa")
+    }
+  }
+
 
   //Delete (Delete)
-  const deleteTask = () => []
+  const deleteTask = async (taskItem) => {
 
+    const querApagar = confirm(`Quer realmaente apagar a terefa'${taskItem.descricao}'`)
+
+    if (!querApagar) return false
+
+    try {
+      const APIReturn = await axios.delete(`http://localhost:3000/taskpoin/${taskItem.id}`)
+      getTasks()
+      alert("Tarefa excluída com sucesso")
+
+    } catch (error) {
+      alert("Erro ao excluir a tarefa")
+    }
+  }
+
+  //roda na montagem do componente - ciclo 
   useEffect(() => {
-    getTaks()
+    getTasks()
   }, [])
 
   return (
@@ -47,13 +118,31 @@ function App() {
       </header>
 
       <main className='body-section'>
-        <form className="cad-task">
+        <form className="cad-task" onSubmit={editMode ? confirmPutTask : createTask}>
           <input
             type="text"
+            value={taskValue}
+            onChange={(e) => setTaskValue(e.target.value)}
             className="cad-task__entry"
             placeholder='Adicione uma tarefa'
           />
+          <p>State: {taskValue}</p>
+          <p>Id pra editar: {idToEdit}</p>
           <button className='cad-task__btn-confirm'>Adicionar</button>
+
+          {editMode && (
+            <button
+              type="button"
+              className='cad-task__btn-calcel'
+              onClick={() => {
+                setEditMode(false)
+                setIdToEdit(0)
+                setTaskValue("")
+              }}
+            >
+              Cancelar
+            </button>)}
+
 
         </form>
 
@@ -68,11 +157,20 @@ function App() {
 
                   <div className="cardtask__icon-box">
                     <div className="cardlist__icon">
-                      <img src={iconEdit} alt="Editar tarefa" />
+                      <img src={iconEdit} alt="Editar tarefa"
+                        onClick={() => {
+                          putTask(task)
+                        }}
+
+                      />
                     </div>
 
                     <div className="cardlist__icon">
-                      <img src={trashIcon} alt="Excluir tarefa" />
+                      <img src={trashIcon} alt="Excluir tarefa"
+                        onClick={() => deleteTask(task)
+                        }
+
+                      />
                     </div>
                   </div>
                 </article>
