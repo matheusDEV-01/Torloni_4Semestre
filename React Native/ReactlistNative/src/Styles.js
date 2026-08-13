@@ -1,18 +1,18 @@
-import { StyleSheet} from "react-native"
+import { StyleSheet } from "react-native"
 
- export const styles = StyleSheet.create({
+export  const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: "#1D2135"
     },
-    container: {
+    container : {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "#1d2135",
-        borderWidth : 3,
+        paddingLeft: 20,
+        paddingRight: 20,
+        backgroundColor: "#1D2135",
+        borderWidth: 3,
         borderStyle: "solid",
-        borderColor : "red"
-    }
-})
+        borderColor: "red",
+    },
+});
+
