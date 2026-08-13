@@ -1,73 +1,97 @@
-import axios from "axios";
+
 import { createContext, useState } from "react";
-
-
-
-
-export const TaskContext = createContext()
+import api from "../service/FakeAPIService";
+export const TaskContext = createContext();
 
 export const TaskProvaider = ({ children }) => {
+  const [listagemTarefas, setListagemTarefas] = useState([]);
+  const [taskValue, setTaskValue] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [IdToEdit, setIdToEdit] = useState();
 
-    const [listagemTarefas, setListagemTarefas] = useState([])
-    const [taskValue, setTaskValue] = useState("")
-    const [editMode, setEditMode]  = useState (false)
+  const getTasks = async () => {
+    try {
+      const APIReturn = await api.get("/taskpoint");
+      const APIData = await APIReturn.data;
 
-    const getTasks = async () => {
+      setListagemTarefas(APIData);
+    } catch (error) {
+      console.log("Deu ruim na chamada da api");
+      console.log(error);
+    }
+  };
+
+  const postTask = async (taskValue) => {
+    try {
+      await api.post("/taskpoint", {
+        descricao: taskValue,
+      });
+      const APIData = await APIReturn.data;
+
+      setListagemTarefas(APIData);
+      getTasks(); //lista as tarefas novamente
+    } catch (error) {
+      console.log("Deu ruim na chamada da api");
+      console.log(error);
+    }
+  };
+
+  //visualiza os dados no formulário
+  const putTaskPreview = (tarefa) => {
+    setTaskValue(tarefa.descricao);
+    setEditMode(true);
+    setIdToEdit(tarefa.id);
+    console.log(IdToEdit)
+  };
+
+  //putTask
+    const putTask = async (IdToEdit) => {
         try {
-            const APIReturn = await axios.get("http://172.16.36.22:3000/taskpoint")
-            const APIData = await APIReturn.data
+            await api.put(`/taskpoint/${IdToEdit}`,
+                {
+                    descricao: taskValue
 
-            setListagemTarefas(APIData)
-
-        } catch (error) {
-            console.log("Deu ruim na chamada da api");
-            console.log(error);
-        }
-    }
-
-    const postTask = async (taskValue) => {
-        try {
-            await axios.post("http://172.16.36.22:3000/taskpoint", { descricao: taskValue })
-            const APIData = await APIReturn.data
-
-            setListagemTarefas(APIData)
-            getTasks() //lista as tarefas novamente
-        } catch (error) {
-            console.log("Deu ruim na chamada da api");
-            console.log(error);
-        }
-
-    }
-
-    //visualiza os dados no formulário
-    const putTaskPreview = (tarefa) => {
-        setTaskValue(tarefa.descricao)
-        setEditMode(true)
-    }
-
-
-    const putTask = () => {
-        console.log("FUNÇÃO PUT EM DESENVOLVIMENTO")
-    }
-
-    const deleteTask = async (id) => {
-
-        try {
-            const APIReturn = await axios.delete(`http://172.16.36.22:3000/taskpoint/${id}`)
-            const APIData = await APIReturn.data
-
+                });
             await getTasks()
-
+            setIdToEdit(0)
+            setTaskValue("")
+            setEditMode(false)
 
         } catch (error) {
-
+            console.log(error)
         }
     }
 
+  const deleteTask = async (id) => {
+    try {
+      const APIReturn = await api.delete(
+        `/taskpoint/${id}`,
+      );
+      const APIData = await APIReturn.data;
 
-    return (
-        <TaskContext.Provider value={{ listagemTarefas, setListagemTarefas, getTasks, postTask, putTask, deleteTask, taskValue, setTaskValue, putTaskPreview }}>
-            {children}
-        </TaskContext.Provider>
-    )
-}
+      await getTasks();
+    } catch (error) {}
+  };
+
+  return (
+    <TaskContext.Provider
+      value={{
+        listagemTarefas,
+        setListagemTarefas,
+        getTasks,
+        postTask,
+        putTask,
+        deleteTask,
+        taskValue,
+        setTaskValue,
+        putTaskPreview,
+        editMode,
+        setEditMode,
+        IdToEdit,
+        setIdToEdit,
+      }}
+    >
+      {children}
+    </TaskContext.Provider>
+  );
+};
